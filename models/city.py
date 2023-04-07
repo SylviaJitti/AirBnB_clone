@@ -1,19 +1,20 @@
 #!/usr/bin/python3
-"""Defines a class City that inherits from BaseModel"""
-from models.base_model import BaseModel
+# This module contains the City class
+
+from models.base_model import BaseModel, Base
+from models.place import Place
+from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 
-class City(BaseModel):
-    """Class that defines properties of City.
+class City(BaseModel, Base):
+    '''City class inherits from BaseModel class
 
     Attributes:
-        name (string): name of city.
-        state_id (string): id of state.
-    """
-    state_id = ""
-    name = ""
-
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of City.
-        """
-        super().__init__(*args, **kwargs)
+        state_id: empty string (will eventually be set to State.id)
+        name: city name
+    '''
+    __tablename__ = 'cities'
+    state_id = Column(String(60), ForeignKey('states.id'))
+    name = Column(String(128), nullable=False)
+    places = relationship('Place', backref='cities')
