@@ -1,21 +1,19 @@
 #!/usr/bin/python3
-"""Defines a class Review  that inherits from BaseModel"""
-from models.base_model import BaseModel
+# This module contains the Review class
+
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey
 
 
-class Review (BaseModel):
-    """Class that defines properties of Review .
+class Review(BaseModel, Base):
+    '''Review class inherits from BaseModel class
 
     Attributes:
-        place_id (string): id of city.
-        user_id (string): id of user.
-        text (string): just a text.
-    """
-    place_id = ""
-    user_id = ""
-    text = ""
-
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of Review.
-        """
-        super().__init__(*args, **kwargs)
+        place_id: string (will later be set to Place.id)
+        user_id: string (will later be set to User.id)
+        text: string
+    '''
+    __tablename__ = 'reviews'
+    place_id = Column(String(60), ForeignKey('places.id'))
+    user_id = Column(String(60), ForeignKey('users.id'))
+    text = Column(String(1024), nullable=False)
