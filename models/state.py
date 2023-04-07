@@ -1,17 +1,31 @@
 #!/usr/bin/python3
-"""Defines a class State that inherits from BaseModel"""
-from models.base_model import BaseModel
+# This module contains the State class
+
+from models.base_model import BaseModel, Base
+from models.city import City
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
+import os
 
 
-class State(BaseModel):
-    """Class that defines properties of State.
+class State(BaseModel, Base):
+    '''State class inherits from BaseModel class
 
     Attributes:
-        name (string): name of state.
-    """
-    name = ""
+        name: name of the state
+    '''
+    __tablename__ = 'states'
+    name = Column(String(128), nullable=False)
+    cities = relationship('City', backref='state')
 
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of State.
-        """
-        super().__init__(*args, **kwargs)
+    if os.getenv('HBNB_TYPE_STORAGE') != 'db':
+        @property
+        def cities(self):
+            '''Gets the cities attributes for FileStorage
+            '''
+            from models import storage
+            cities_list = []
+            for city in storage.all(City).values():
+                if self.id == city.state_id:
+                    cities_list.append(city)
+            return cities_list
