@@ -1,37 +1,49 @@
 #!/usr/bin/python3
-"""Defines a class Place that inherits from BaseModel"""
-from models.base_model import BaseModel
+# This module contains the Place class
+
+from models.base_model import BaseModel, Base
+from models.review import Review
+import models
+from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
 
-class Place(BaseModel):
-    """Class that defines properties of Place.
+class Place(BaseModel, Base):
+    '''Place class inherits from BaseModel class
 
     Attributes:
-        city_id (string): id of city.
-        user_id (string): id of user.
-        name (string): name of Place.
-        description (string): description of place.
-        number_rooms (integer): number of rooms in place.
-        number_bathrooms (integer): number of bathrooms in place.
-        max_guest (integer): maximum number of guests allowed in a place.
-        price_by_night (integer): price of room per night.
-        latitude (float): latitude of place on a map.
-        longitude (float): longitude of place on a map.
-        amenity_ids (list (of string)): list of Amenity.id of place.
-    """
-    city_id = ""
-    user_id = ""
-    name = ""
-    description = ""
-    number_rooms = 0
-    number_bathrooms = 0
-    max_guest = 0
-    price_by_night = 0
-    latitude = 0.0
-    longitude = 0.0
+        city_id: string (will eventually be set to City.id)
+        user_id: string (will eventually be set to User.id)
+        name: string
+        description: string
+        number_rooms: integer
+        number_bathrooms: integer
+        max_guest: integer
+        price_by_night: integer
+        latitude: float
+        longitude: float
+        amenity_ids: list of string (will later be set to list of Amenity.id)
+    '''
+    __tablename__ = 'places'
+    city_id = Column(String(60), ForeignKey('cities.id'))
+    user_id = Column(String(60), ForeignKey('users.id'))
+    name = Column(String(128), nullable=False)
+    description = Column(String(1024), nullable=False)
+    number_rooms = Column(Integer, nullable=False, default=0)
+    number_bathrooms = Column(Integer, nullable=False, default=0)
+    max_guest = Column(Integer, nullable=False, default=0)
+    price_by_night = Column(Integer, nullable=False, default=0)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
     amenity_ids = []
+    reviews = relationship('Review', backref='place')
 
-    def __init__(self, *args, **kwargs):
-        """Creates new instances of Place.
-        """
-        super().__init__(*args, **kwargs)
+    @property
+    def reviews(self):
+        '''Returns a list of Review instances with place_id equal to Place.id
+        '''
+        reviews_list = []
+        for review in models.storage.all(Review).values():
+            if review.place_id == self.id:
+                reviews_list.append(review)
+        return reviews_list
