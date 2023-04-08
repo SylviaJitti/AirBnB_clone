@@ -731,8 +731,8 @@ Otherwise, you will have to re-write the console by replacing precmd by default.
 - - -
 
 ## Known Bugs
-The following tasks did not pass all checks: tasks 2, 3, 5, 9, 16, and 17.
+The following tasks did not pass all checks: tasks 11, 12.
 
 ### Collaborate
 
-To collaborate, reach me through the email addresses wendymunyasi@gmail.com.
+To collaborate, reach me through the email addresses sylviajitti@gmail.com.
